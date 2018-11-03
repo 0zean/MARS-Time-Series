@@ -42,3 +42,5 @@ The model was then passed through the AdaBoostRegressor boosting method
 the results were then measued with mean squared error, R-squared, and Standard Error of the Estimate:
 
 ![alt text](https://github.com/Nicholas-Picini/MARS-Time-Series/blob/master/Stats.png)
+
+The average estimate error for the boosted model turns out to be ~ $0.29 out of sample
