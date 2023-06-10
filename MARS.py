@@ -187,4 +187,5 @@ plotly.offline.plot({
                    [MSE1, MSE2, MSEB1, MSEB2],
                    [R1, R2, R3, R4],
                    [S11, S21, S31, S41]], align=['left']*5))]},
-                   filename='stats.html', image='png')
+                   image_filename='stats', image='png',
+                   image_height=400, image_width=300)
