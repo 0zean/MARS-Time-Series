@@ -9,8 +9,8 @@ from scipy.stats import skew
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-train = pd.read_csv('AAPL5_train.csv')  # 5-minute Apple data
-test = pd.read_csv('AAPL5_test.csv')
+train = pd.read_csv('Data/AAPL5_train.csv')  # 5-minute Apple data
+test = pd.read_csv('Data/AAPL5_test.csv')
 
 # Preprocess: remove unnecessary columns
 cols = list(train)[4:9]
