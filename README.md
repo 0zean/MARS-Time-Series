@@ -8,9 +8,9 @@ Python Script to fit a MARS model to 5-minute Apple stock data to predict the hi
 - pandas
 - matplotlib
 - scipy
-- [py-earth](https://github.com/scikit-learn-contrib/py-earth)
+- [py-earth](https://github.com/scikit-learn-contrib/py-earth/tree/v0.2dev)
 - sklearn
-- ta-lib
+- [ta-lib](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib)
 
 The general premise of this model is to use the Open price and a select few technical indicators, namely a 7-period Standard deviation and Hilbert Transform Dominant cycle period both calculated with the Open price. the Close, High, Low, and Volume were removed from the training set since these values are definitively formed only posteriorly, thus the Open price and its transformations were used.
 
