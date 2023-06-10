@@ -20,27 +20,27 @@ Each feature was normalized with a log(feature + 1) transformation and then fit 
 
 **In Sample Results** (Zoomed in):
 
-![alt text](MARS1.png)
+![alt text](Plots/MARS1.png)
 
 
 **Out Sample Results** (Zoomed in):
 
-![alt text](MARS2.png)
+![alt text](Plots/MARS2.png)
 
 
 The model was then passed through the AdaBoostRegressor boosting method
 
 **In Sample Adaboost Results** (Zoomed in):
 
-![alt text](AB1.png)
+![alt text](Plots/AB1.png)
 
 **Out Sample Adaboost Results** (Zoomed in):
 
-![alt text](AB2.png)
+![alt text](Plots/AB2.png)
 
 
 the results were then measued with mean squared error, R-squared, and Standard Error of the Estimate:
 
-![alt text](Stats.png)
+![alt text](Plots/stats.png)
 
 The average estimate error for the boosted model turns out to be ~ $0.28 out of sample
