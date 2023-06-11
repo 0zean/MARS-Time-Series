@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import plotly
-import plotly.graph_objs as go
 import talib
 from pyearth import Earth
 from scipy.stats import skew
@@ -134,16 +132,16 @@ yb1 = boosted_mars.predict(x1)
 
 # Graphs of test/train
 graph(x_train, inverse(y), inverse(y_hat), 5000, 5100,
-      Title='MARS: Train').savefig('MARS1.png')
+      Title='MARS: Train').savefig('Plots/MARS1.png')
 
 graph(x_test, inverse(y1), inverse(y_hat1), 150, 250,
-      Title='MARS: Test').savefig('MARS2.png')
+      Title='MARS: Test').savefig('Plots/MARS2.png')
 
 graph(x_train, inverse(y), inverse(yb), 5000, 5100,
-      Title='Adaboost MARS: Train').savefig('AB1.png')
+      Title='Adaboost MARS: Train').savefig('Plots/AB1.png')
 
 graph(x_test, inverse(y1), inverse(yb1), 150, 250,
-      Title='Adaboost MARS: Test').savefig('AB2.png')
+      Title='Adaboost MARS: Test').savefig('Plots/AB2.png')
 
 # Mean Squared Error on each case
 MSE1 = mean_squared_error(inverse(y), inverse(y_hat))
@@ -157,34 +155,70 @@ R2 = r2_score(inverse(y1), inverse(y_hat1))
 R3 = r2_score(inverse(y), inverse(yb))
 R4 = r2_score(inverse(y1), inverse(yb1))
 
-# S-Statistics
-S1 = pd.DataFrame(((pd.DataFrame(inverse(y)).values -
-                   (pd.DataFrame(inverse(y_hat))).values)**2))
 
-S11 = np.sqrt((S1.sum(axis=0))/len(y))
-
-S2 = pd.DataFrame(((pd.DataFrame(inverse(y1)).values -
-                   (pd.DataFrame(inverse(y_hat1))).values)**2))
-
-S21 = np.sqrt((S2.sum(axis=0))/len(y1))
-
-S3 = pd.DataFrame(((pd.DataFrame(inverse(y)).values -
-                   (pd.DataFrame(inverse(yb))).values)**2))
-
-S31 = np.sqrt((S3.sum(axis=0))/len(y))
-
-S4 = pd.DataFrame(((pd.DataFrame(inverse(y1)).values -
-                   (pd.DataFrame(inverse(yb1))).values)**2))
-
-S41 = np.sqrt((S4.sum(axis=0))/len(y1))
+# S-Statistic
+def s_error(true, pred):
+    s = pd.DataFrame(((pd.DataFrame(inverse(true)).values -
+                     (pd.DataFrame(inverse(pred))).values)**2))
+    se = np.sqrt((s.sum(axis=0))/len(true))
+    return se[0]
 
 
-plotly.offline.plot({
-    "data": [go.Table(
-        header=dict(values=['Type', 'MSE', 'R-Squared', 'SE of Estimate'],
-                    align=['left']*5),
-        cells=dict(values=[['train', 'OOS', 'train(boosted)', 'OOS(boosted)'],
-                   [MSE1, MSE2, MSEB1, MSEB2],
-                   [R1, R2, R3, R4],
-                   [S11, S21, S31, S41]], align=['left']*5))]},
-                   image_filename='stats', image='png')
+S1 = s_error(y, y_hat)
+S2 = s_error(y1, y_hat1)
+S3 = s_error(y, yb)
+S4 = s_error(y1, yb1)
+
+# Plot Table of Metrics
+table_data = {
+    "": ["Train", "OOS", "Train (Boosted)", "OOS (Boosted)"],
+    "MSE": [f'{MSE1:.3f}', f'{MSE2:.3f}', f'{MSEB2:.3f}', f'{MSEB2:.3f}'],
+    "R\u00b2": [f'{R1:.4f}', f'{R2:.4f}', f'{R3:.4f}', f'{R4:.4f}'],
+    "Standard Error": [f'{S1:.3f}', f'{S2:.3f}', f'{S3:.3f}', f'{S4:.3f}']
+}
+
+table_df = pd.DataFrame(table_data)
+
+fig, ax = plt.subplots(figsize=(8, 6), dpi=180)
+
+rows = 5
+cols = 4
+
+ax.set_ylim(-.5, rows)
+ax.set_xlim(0, cols)
+
+for row in table_df.iterrows():
+    ax.text(x=0, y=row[0], s=row[1][""], va="center",
+            ha="left", weight="bold", size=14)
+    ax.text(x=1.5, y=row[0], s=row[1]["MSE"], va="center",
+            ha="center", size=14)
+    ax.text(x=2.5, y=row[0], s=row[1]["R\u00b2"], va="center",
+            ha="center", size=14)
+    ax.text(x=3.5, y=row[0], s=row[1]["Standard Error"], va="center",
+            ha="center", size=14)
+
+ax.axis('off')
+
+ax.text(1.5, rows-1, 'MSE', weight='bold', ha='center', size=16)
+ax.text(2.5, rows-1, 'R\u00b2', weight='bold', ha='center', size=16)
+ax.text(3.5, rows-1, 'Standard Error', weight='bold', ha='center', size=16)
+
+ax.set_title(
+        'Model Metrics In and Out of Sample',
+        loc='center',
+        fontsize=18,
+        weight='bold')
+
+ax.plot([0, cols+8], [rows-1.2, rows-1.2], ls="-", lw=1, c="black")
+
+for row in table_df.iterrows():
+    ax.plot(
+        [0, cols-.2],
+        [row[0] - .5, row[0] - .5],
+        ls=':',
+        lw='.5',
+        c='grey'
+    )
+
+plt.show()
+fig.savefig('Plots/stats.png')
